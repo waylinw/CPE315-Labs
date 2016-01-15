@@ -2,8 +2,7 @@
 	mask: .word 0xF0000000
 	nums: .word 0x0000000A
 	count: .word 28
-	input: .word 1234567899
-	#input: .word 0b10010111011100110101111000110110
+	input: .word 12345678
 	stge: .space 10
 .text
 
@@ -24,32 +23,32 @@ main:
 	loop:
 		and $t1, $s0, $a0 		#load the result of $t0 and $a0 into $t1
 		srl $t1, $t1, $s1
-		addi $s1, $s1, -4		#decrement the count by 4 bits (1 byte)
+		addi $s1, $s1, -4       #decrement the count by 4 bits (1 byte)
 		srl $s0, $s0, 4
 		bge $t1, $s2, letter 	#branch to hexup if $t1 contains alphabetical hex value (A-F)
-		b number				#branch to hexdown if $t1 contains numberical hex value (0-9)
+		b number                #branch to hexdown if $t1 contains numberical hex value (0-9)
 
 	letter:
 		addi $t1, $t1, 55 		#obtain ascii value and store into stge
-		sw $t1, 0($a1)		
-		addi $a1, $a1, 4 		#move up stge array pointer by 4
-		beq $s1, $0, finish		#if counter is 0 branch to fin
+		sb $t1, 0($a1)
+		addi $a1, $a1, 1        #move up stge array pointer by 4
+		blt $s1, $0, finish		#if counter is 0 branch to fin
 		b loop
 
 	number:
 		addi $t1, $t1, 48 		#obtain ascii value and store into stge
-		sw $t1, 0($a1)		
-		addi $a1, $a1, 4 		#move up stge array pointer by 4
-		beq $s1, $0, finish		#if counter is 0 branch to fin
+		sb $t1, 0($a1)
+		addi $a1, $a1, 1        #move up stge array pointer by 4
+		blt $s1, $0, finish		#if counter is 0 branch to fin
 		b loop
 
 	finish:
+      addi $t1, $t1, 1
 		li $t1, 0
-		sw $t1, 0($a1)
-		li $v0, 4 				#load up syscalll for printing
-		addi $a1, $a1, -32		#move $a1 back to beginning of the string
-		move $a0, $a1
-		syscall
+		sb $t1, 0($a1)
+		li $v0, 4               #load up syscalll for printing
+      la $a0, stge
+      syscall
 
 		li $v0, 10
 		syscall
