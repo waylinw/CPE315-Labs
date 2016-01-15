@@ -3,6 +3,7 @@
 	nums: .word 0x0000000A
 	count: .word 28
 	input: .word 1234567899
+	#input: .word 0b10010111011100110101111000110110
 	stge: .space 10
 .text
 
@@ -31,14 +32,14 @@ main:
 		addi $t1, $t1, 55 		#obtain ascii value and store into stge
 		sw $t1, 0($a1)		
 		addi $a1, $a1, 4 		#move up stge array pointer by 4
-		blt $t3, $0, finish		#if counter is 0 branch to fin
+		beq $s1, $0, finish		#if counter is 0 branch to fin
 		b loop
 
 	number:
 		addi $t1, $t1, 48 		#obtain ascii value and store into stge
 		sw $t1, 0($a1)		
 		addi $a1, $a1, 4 		#move up stge array pointer by 4
-		blt $t3, $0, finish		#if counter is 0 branch to fin
+		beq $s1, $0, finish		#if counter is 0 branch to fin
 		b loop
 
 	finish:
