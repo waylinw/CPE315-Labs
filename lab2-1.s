@@ -25,6 +25,7 @@ main:
 		and $t1, $s0, $a0 		#load the result of $t0 and $a0 into $t1
 		srl $t1, $t1, $s1
 		addi $s1, $s1, -4		#decrement the count by 4 bits (1 byte)
+		srl $s0, $s0, 4
 		bge $t1, $s2, letter 	#branch to hexup if $t1 contains alphabetical hex value (A-F)
 		b number				#branch to hexdown if $t1 contains numberical hex value (0-9)
 
