@@ -9,16 +9,23 @@
 .globl main
 
 main:
-	la $a0, input              #load input integer into$a0 from memory
-	lw $a0, 0($a0)
-	la $a1, stge               #load hex string storage address into $a1
+   la $s3, input              #load input integer into$a0 from memory
+   lw $s3, 0($s3)             #test comment
 
-	la $s0, mask               #load mask into $s0
-	lw $s0, 0($s0)
-	la $s1, count              #load count into $s1
-	lw $s1, 0($s1)		
-	la $s2, split              #load split into $s2
-	lw $s2, 0($s2)	
+
+   bintohex:
+      #it's up to you to decide from which register you want to load the integer
+      #my example uses $s3
+
+      move $a0, $s3              #load input integer into $a0 from memory
+      la $a1, stge               #load hex string storage address into $a1
+
+      la $s0, mask               #load mask into $s0
+      lw $s0, 0($s0)
+      la $s1, count              #load count into $s1
+      lw $s1, 0($s1)
+      la $s2, split              #load split into $s2
+      lw $s2, 0($s2)
 
 	loop:
 		and $t1, $s0, $a0 		#load the result of $t0 and $a0 into $t1
