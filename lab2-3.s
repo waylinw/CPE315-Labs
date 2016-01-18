@@ -5,22 +5,53 @@
 	input: .word 12345678
    test:  .word 99999999
 	stge: .space 10
+   word_1: .word 0x12345678, 0x12345678 #first 64 bit int, ahi,alo
+   word_2: .word 0x12345678, 0x12345678 #second 64bit int, bhi,blo
+
 .text
 
 .globl main
 
 main:
-   la $s3, input              #load input integer into$a0 from memory
-   lw $a0, 0($s3)             #test comment
 
+   subu $sp, $sp, 12    #make 8 bytes available for stack
+   sw $ra, 4($sp)      #store return address
+   sw $fp, 0($sp)      #store frame pointer
+
+   la $s0, word_1       #load 1st 64 bit array
+   lw $a0, 0($s0)       #load ahi
+   lw $a1, 4($s0)       #load alo
+
+   la $s0, word_2       #load 2nd 64 bit array
+   lw $a2, 0($s0)       #load bhi
+   lw $a3, 4($s0)       #load blo
+
+   jal add_64           #calls function to add
+
+   move $a0, $v0        #print out sum hi
    jal bintohex
 
-   la $a0, test
-   lw $a0, 0($a0)
+   move $a0, $v1        #print out sum low
    jal bintohex
 
    li $v0, 10
    syscall
+
+add_64:
+   addu $v1, $a1, $a2   #add alo, blo
+   addu $v0, $a0, $a2   #add ahi, bhi
+   srl $t0, $a1, 1      #shift right by 1
+   srl $t1, $a3, 1      #shift right by 1
+   addu $t2, $t0, $t1   #add alo, blo into t2 to check for carry
+
+   andi $t3, $a1, 1
+   andi $t3, $t3, 1
+   addu $t2, $t2, $t3
+   srl $t2, $t2, 31 #gets highest order bit in $t2
+   beq $t2, $zero, no_carry #increment hisum only if carry
+   addi $v0, $v0, 1
+   no_carry:
+   jr $ra
 
 bintohex:
       #it's up to you to decide from which register you want to load the integer
