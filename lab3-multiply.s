@@ -19,7 +19,7 @@ main:
    lw $a1, num2
    jal float_multiply
 
-   move $a0, $v0        #print out sum hi
+   move $a0, $v0        #print out sum 
    jal bintohex
 
    li $v0, 10
@@ -103,7 +103,7 @@ negate:
    xor $t0, $t0, $t1 # exclusive or to flip bits
    addi $t0, $t0, 1  # add 1 to t0
    sw $t0, 4($sp)    # save word back onto stack
-   jr $ra            # return
+jr $ra            # return
 
 bintohex:
       #it's up to you to decide from which register you want to load the integer

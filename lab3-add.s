@@ -16,7 +16,7 @@
 main:
    lw $a0, num1
    lw $a1, num2
-   jal add_float
+   jal float_add
 
    move $a0, $v0        #print out sum hi
    jal bintohex
@@ -41,7 +41,7 @@ main:
 #s5   matissa2
 #s6   signResult
 
-add_float:
+float_add:
    #sign
    srl $s0, $a0, 31 #get sign of num1
    srl $s3, $a1, 31 #get sign of num2
