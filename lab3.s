@@ -1,6 +1,6 @@
 .data
-   num1: .word 0x42000000 #32
-   num2: .word 0xc1f00000 #30
+   num1: .word 0x40400000 #32
+   num2: .word 0x3f800000 #30
    expMask: .word 0x7F800000 #exp mask
    matissaMask: .word 0x7FFFFF #matissaMask
    matissaHidden: .word 0x40000000 #matissa hidden 1
@@ -86,6 +86,10 @@ secondNegate:
       addi $sp, $sp, 8
 
 shift_scale:
+   addi $s1, $s1, 1
+   addi $s4, $s4, 1
+   srl $s2, $s2, 1
+   srl $s5, $s5, 1
    bgt $s4, $s1, shift_num1_right   #if num2 has higher power, shift 1 right to increase power
    bgt $s1, $s4, shift_num2_right   #if num1 has higher power, shift num2 right to increase power
    j add_num
