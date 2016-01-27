@@ -1,12 +1,13 @@
 .data
-   num1: .word 0x40400000 #32
-   num2: .word 0x3f800000 #30
+   num1: .word 0x3f800000 #-.3
+   num2: .word 0x40a00000 #500.25
    expMask: .word 0x7F800000 #exp mask
    matissaMask: .word 0x7FFFFF #matissaMask
    matissaHidden: .word 0x40000000 #matissa hidden 1
    matissaResultMask: .word 0x3FFFFF80 #mask for the result matissa
    mask: .word 0xF0000000
 	split: .word 0x0000000A
+   multiplyResultMask: .word 0x80000000
 	count: .word 28
 	stge: .space 10
    .text
@@ -16,7 +17,7 @@
 main:
    lw $a0, num1
    lw $a1, num2
-   jal add_float
+   jal float_multiply
 
    move $a0, $v0        #print out sum hi
    jal bintohex
@@ -41,7 +42,7 @@ main:
 #s5   matissa2
 #s6   signResult
 
-add_float:
+float_multiply:
    #sign
    srl $s0, $a0, 31 #get sign of num1
    srl $s3, $a1, 31 #get sign of num2
@@ -66,61 +67,9 @@ add_float:
    or $s2, $t0, $s2  #add the hidden 1
    or $s5, $t0, $s5  #add the hidden 1
 
-   beq $s0, $zero, secondNegate #if num 1 is not negative jumpt o negate second
-      addi $sp $sp, -8  #load matissa onto stack
-      sw $s2, 4($sp)
-      sw $ra, 0($sp)
-      jal negate
-      lw $s2, 4($sp) #unload negated matissa from stack
-      lw $ra, 0($sp)
-      addi $sp, $sp, 8
-
-secondNegate:
-   beq $s3, $zero, shift_scale# if num 2 is not negative jump to equalizing scale
-      addi $sp $sp, -8 #load matissa onto stack
-      sw $s5, 4($sp)
-      sw $ra, 0($sp)
-      jal negate
-      lw $s5, 4($sp) #unload negated matissa from stack
-      lw $ra, 0($sp)
-      addi $sp, $sp, 8
-
-shift_scale:
-   addi $s1, $s1, 1
-   addi $s4, $s4, 1
-   srl $s2, $s2, 1
-   srl $s5, $s5, 1
-   bgt $s4, $s1, shift_num1_right   #if num2 has higher power, shift 1 right to increase power
-   bgt $s1, $s4, shift_num2_right   #if num1 has higher power, shift num2 right to increase power
-   j add_num
-
-shift_num1_right:
-   sra $s2, $s2, 1
-   addi $s1, $s1, 1
-   bgt $s4, $s1, shift_num1_right
-   j add_num
-
-shift_num2_right:
-   sra $s5, $s5, 1
-   addi $s4, $s4, 1
-   bgt $s1, $s4, shift_num2_right
-
-add_num:
-   add $t1, $s2, $s5
-
-   srl $s6, $t1, 31 # getting the sign of the result
-
-   #or $t8, $s0, $s3
-   beq $s6, $zero, normalize_loop
-
-negate_result:
-   addi $sp $sp, -8 # load matissa onto stack
-   sw $t1, 4($sp)
-   sw $ra, 0($sp)
-   jal negate
-   lw $t1, 4($sp) # unload negated matissa from stack
-   lw $ra, 0($sp)
-   addi $sp, $sp, 8
+mult_num:
+   multu $s2, $s5  #multiply s2, s5
+   mfhi $t1       #load the high bits into t1
 
 normalize_loop: # shift left till 30th bit is 1
    lw $t0, matissaHidden
@@ -135,6 +84,8 @@ repack:
    and $t1, $t0, $t1 # get the matissa for the result
    srl $t1, $t1, 7 # shift the result matisa by 7 bits
    sll $s6, $s6, 31 # shift the sign to MSB
+   xor $s6, $s0, $s3 #srl $s6, $t1, 31 # getting the sign of the result
+   add $s1, $s1, $s4 # add the powers up together
    add $s1, $s1, 127 # add the bias
    sll $s1, $s1, 23 # shift the bias 23 bits
 
