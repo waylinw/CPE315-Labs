@@ -1,6 +1,6 @@
 .data
-   num1: .word 0x3f800000 #-.3
-   num2: .word 0x40a00000 #500.25
+   num1: .word 0xc0000000 #-2
+   num2: .word 0x40a00000 #5
    expMask: .word 0x7F800000 #exp mask
    matissaMask: .word 0x7FFFFF #matissaMask
    matissaHidden: .word 0x40000000 #matissa hidden 1
@@ -70,6 +70,8 @@ float_multiply:
 mult_num:
    multu $s2, $s5  #multiply s2, s5
    mfhi $t1       #load the high bits into t1
+   sll $t1, $t1, 1  #shift left by 1 bit to adjust for scale
+   addi  $s1, $s1, 1 #adjust for the scale
 
 normalize_loop: # shift left till 30th bit is 1
    lw $t0, matissaHidden
