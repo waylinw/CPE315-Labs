@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="766944a4-ebb4-48ce-8e4b-e9b4cdd893ab" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler$1.class" afterPath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler$2.class" afterPath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler$3.class" afterPath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler.class" afterPath="$PROJECT_DIR$/out/production/CPE315-Labs/Assembler.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Assembler.java" afterPath="$PROJECT_DIR$/src/Assembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.s" afterPath="$PROJECT_DIR$/test.s" />
     </list>
     <ignored path="CPE315-Labs.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,8 +32,8 @@
       <file leaf-file-name="Assembler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Assembler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.2375">
-              <caret line="33" column="34" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.375">
+              <caret line="92" column="94" selection-start-line="92" selection-start-column="94" selection-end-line="92" selection-end-column="94" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -75,7 +76,8 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="x" value="189" />
+    <option name="y" value="31" />
     <option name="width" value="1440" />
     <option name="height" value="805" />
   </component>
@@ -619,15 +621,22 @@
       <option name="number" value="Default" />
       <updated>1455321271469</updated>
       <workItem from="1455321272957" duration="5185000" />
-      <workItem from="1455394954321" duration="739000" />
+      <workItem from="1455394954321" duration="836000" />
     </task>
+    <task id="LOCAL-00001" summary="Commented&#10;Petar plz try to change a little bit of code? lol like variable names? and start the file in google doc plz!!!">
+      <created>1455395731977</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1455395731977</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5924000" />
+    <option name="totallyTimeSpent" value="6021000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="805" extended-state="0" />
+    <frame x="189" y="31" width="1440" height="805" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -658,6 +667,10 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Commented&#10;Petar plz try to change a little bit of code? lol like variable names? and start the file in google doc plz!!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commented&#10;Petar plz try to change a little bit of code? lol like variable names? and start the file in google doc plz!!!" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
@@ -687,8 +700,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Assembler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.2375">
-          <caret line="33" column="34" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.375">
+          <caret line="92" column="94" selection-start-line="92" selection-start-column="94" selection-end-line="92" selection-end-column="94" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
