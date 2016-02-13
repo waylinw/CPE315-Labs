@@ -153,6 +153,11 @@ public class Assembler {
         return coded + s + t+ imm;
     }
 
+    /**
+     * Transcoding for R type instructions
+     * @param line
+     * @return String representation of the binary representation of instruction
+     */
     public static String transCodeR(String line){
         String[] temp = line.split(" ");
         String coded = "000000";
@@ -216,6 +221,11 @@ public class Assembler {
         }
     }
 
+    /**
+     * Read in the file and return every line of the file in arraylist.
+     * @param fileName
+     * @return
+     */
     public static ArrayList<String> readFile(String fileName) {
         ArrayList<String> lines = new ArrayList<String>();
         File f = new File(fileName);
@@ -232,6 +242,11 @@ public class Assembler {
         return lines;
     }
 
+    /**
+     * Strips comments tag on the file on the file
+     * @param lines
+     * @return ArrayList with all comment tags removed
+     */
     private static ArrayList<String> removeComments(ArrayList<String> lines) {
         ArrayList<String> temp = new ArrayList<String>();
         for (String s : lines) {
@@ -244,6 +259,11 @@ public class Assembler {
         return format(temp);
     }
 
+    /**
+     * Remove , tabs and double spaces so we can parse correctly
+     * @param lines
+     * @return ArrayList with all punctuations/spaces removed
+     */
     private static ArrayList<String> format(ArrayList<String> lines) {
         ArrayList<String> temp = new ArrayList<String>();
         for (String s : lines) {
@@ -256,21 +276,38 @@ public class Assembler {
         return temp;
     }
 
+    /**
+     * Convert decimal to binary
+     * @param x integer to convert to binary
+     * @param numChars number of bits to output
+     * @return string representation of the binary output
+     */
     public static String decToBin(int x, int numChars) {
         String format = "%" + numChars + "s";
-        String temp = String.format(format, Integer.toBinaryString(x)).replace(' ',
-                '0');
+        String temp = String.format(format, Integer.toBinaryString(x)).replace(' ', '0');
         if(temp.length() > 16){
             return temp.substring(temp.length()-numChars);
         }
         return temp;
     }
 
+    /**
+     * Convert hex to binary
+     * @param x string representation of a hex number
+     * @param numChars number of bits to output
+     * @return string representation of the binary output
+     */
     public static String hexToBin(String x, int numChars) {
         int hex = Integer.parseInt(x, 16);
         return decToBin(hex, numChars);
     }
 
+    /**
+     * Convert a number to binary
+     * @param x string rep of the number
+     * @param numChars number of characters to output
+     * @return string representation of the binary output
+     */
     public static String numToBin(String x, int numChars){
         if(x.contains("0x")){
             return decToBin(Integer.parseInt(x.substring(2), 16),numChars);
