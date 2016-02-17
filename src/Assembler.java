@@ -40,7 +40,7 @@ public class Assembler {
      * @param lineNumber
      */
     public static void transcode(String line, int lineNumber) {
-        //Spliting the line up by spaces so that we can get the 0th element and that'll tell us the instruction type
+        //Splitting the line up by spaces so that we can get the 0th element and that'll tell us the instruction type
         String[] temp = line.split(" ");
         String instruction = "";
 
@@ -49,30 +49,24 @@ public class Assembler {
         //Uses the .contains method from hashmap to simplify life
         //Then passes it to its specific instruction type function for transcoding
 
-        if (rInstructions.contains(temp[0])) {
+        if (rInstructions.contains(temp[0]))
             System.out.println(transCodeR(line));
-        }
-        else if (iInstructions.contains(temp[0])) {
+        else if (iInstructions.contains(temp[0]))
             System.out.println(transCodeI(line, lineNumber));
-
-        }
         else if (jInstructions.contains(temp[0])) {
             instruction += jInstructionMap.get(temp[0]);
 
-            if(labels.containsKey(temp[1])) {
-                if(labels.get(temp[1]).contains("0x")) {
+            if(labels.containsKey(temp[1]))
+                if (labels.get(temp[1]).contains("0x"))
                     instruction += hexToBin(temp[1], 26);
-                }
                 else {
                     displacement = (Integer.parseInt(labels.get(temp[1])) - (lineNumber + 1));
                     instruction += decToBin(displacement, 26);
                 }
-            }
             System.out.println(instruction);
         }
-        else if (temp[0].contains("syscall"))  {
+        else if (temp[0].contains("syscall"))
             System.out.println("00000000000000000000000000000110");
-        }
     }
 
     /**
@@ -88,66 +82,64 @@ public class Assembler {
         String t = "00000";
         String imm = "0000000000000000";
         int displacement;
-        String[] split;
 
-        if (temp[0].equals("andi") || temp[0].equals("ori") || temp[0].equals("addi") || temp[0].equals("addiu") || temp[0].equals("sltiu")){
-            t = registers.get(temp[1]);
-            if (temp.length == 4){
-                s = registers.get(temp[2]);
-                if (temp[3].contains("0x"))
-                    imm = hexToBin(temp[3].substring(2), 16);
-                else
-                    imm = decToBin(Integer.parseInt(temp[3].replaceAll(" ", "")), 16);
-            }
-            else {
-                s = registers.get(temp[2].substring(temp[2].indexOf("(")+1, temp[2].indexOf(")")));
-                imm = hexToBin(temp[2].substring(2, temp[2].indexOf("(")),16);
-            }
-        }
-        else if (temp[0].equals("beq") || temp[0].equals("bne")){
-            s = registers.get(temp[1]);
-            t = registers.get(temp[2]);
+        switch (temp[0]) {
+            case "andi":
+            case "ori":
+            case "addi":
+            case "addiu":
+            case "sltiu":
+                t = registers.get(temp[1]);
+                if (temp.length == 4) {
+                    s = registers.get(temp[2]);
+                    if (temp[3].contains("0x"))
+                        imm = hexToBin(temp[3].substring(2), 16);
+                    else
+                        imm = decToBin(Integer.parseInt(temp[3].replaceAll(" ", "")), 16);
+                } else {
+                    s = registers.get(temp[2].substring(temp[2].indexOf("(") + 1, temp[2].indexOf(")")));
+                    imm = hexToBin(temp[2].substring(2, temp[2].indexOf("(")), 16);
+                }
+                break;
+            case "beq":
+            case "bne":
+                s = registers.get(temp[1]);
+                t = registers.get(temp[2]);
 
-            if (labels.containsKey(temp[3])) {
-                if (labels.get(temp[3]).contains("0x")) {
-                    imm = hexToBin(temp[1], 16);
+                if (labels.containsKey(temp[3])) {
+                    if (labels.get(temp[3]).contains("0x"))
+                        imm = hexToBin(temp[1], 16);
+                    else {
+                        displacement = (Integer.parseInt(labels.get(temp[3])) - (lineNumber + 1));
+                        imm = decToBin(displacement, 16);
+                    }
                 }
-                else {
-                    displacement = (Integer.parseInt(labels.get(temp[3])) - (lineNumber + 1));
-                    imm = decToBin(displacement, 16);
+                break;
+            case "lw":
+            case "sw":
+                t = registers.get(temp[1]);
+                if (temp[2].contains("0x")) {
+                    s = registers.get(temp[2].substring(temp[2].indexOf("(") + 1, temp[2].indexOf(")")));
+                    imm = hexToBin(temp[2].substring(2, temp[2].indexOf("(")), 16);
                 }
-            }
-        }
-        else if(temp[0].equals("lw") || temp[0]. equals("sw")){
-            t = registers.get(temp[1]);
-            if (temp[2].contains("0x")){
-                s = registers.get(temp[2].substring(temp[2].indexOf("(")+1, temp[2].indexOf(")")));
-                imm = hexToBin(temp[2].substring(2,temp[2].indexOf("(")), 16);
-            }
-            if (labels.containsKey(temp[2])) {
-                if (labels.get(temp[2]).contains("0x")) {
-                    imm = hexToBin(temp[2], 16);
+                if (labels.containsKey(temp[2])) {
+                    if (labels.get(temp[2]).contains("0x"))
+                        imm = hexToBin(temp[2], 16);
+                    else {
+                        displacement = (Integer.parseInt(labels.get(temp[2])) - (lineNumber + 1));
+                        imm = decToBin(displacement, 16);
+                    }
                 }
-                else {
-                    displacement = (Integer.parseInt(labels.get(temp[2])) - (lineNumber + 1));
-                    imm = decToBin(displacement, 16);
+                try {
+                    if (temp[2].contains("("))
+                        imm = numToBin(labels.get(temp[2].substring(0, temp[2].indexOf("("))), 16);
+                } catch (Exception e) {
                 }
-            }
-            try {
-                if (temp[2].contains("(")) {
-                    imm = numToBin(labels.get(temp[2].substring(0, temp[2].indexOf("("))), 16);
-                }
-            }
-            catch (Exception e) {
-            }
-        }
-        else if (temp[0].equals("lui")){
-            t = registers.get(temp[1]);
-            if (temp[2].contains("(")){
-                imm = decToBin((Integer.parseInt(temp[2].substring(2,temp[2].indexOf("(")),16) + registerValues.get(temp[2].substring(temp[2].indexOf("(")+1, temp[2].indexOf(")")))),16);
-            }
-            else
-                imm = numToBin(temp[2], 16);
+                break;
+            case "lui":
+                t = registers.get(temp[1]);
+                imm = temp[2].contains("(") ? decToBin((Integer.parseInt(temp[2].substring(2, temp[2].indexOf("(")), 16) + registerValues.get(temp[2].substring(temp[2].indexOf("(") + 1, temp[2].indexOf(")")))), 16) : numToBin(temp[2], 16);
+                break;
         }
 
         return coded + s + t+ imm;
@@ -166,16 +158,23 @@ public class Assembler {
         String d = "00000";
         String h = "00000";
 
-        if(temp[0].equals("jr"))
-            s = registers.get(temp[1]);
-        else if(temp[0].equals("srl") || temp[0].equals("sra") || temp[0].equals("sll")){
-            d = registers.get(temp[1]);
-            t = registers.get(temp[2]);
-            h = numToBin(temp[3],5); //TODO hex or bin to binary
-        }else{
-            d = registers.get(temp[1]);
-            s = registers.get(temp[2]);
-            t = registers.get(temp[3]);
+        switch (temp[0]) {
+            case "jr":
+                s = registers.get(temp[1]);
+                break;
+            case "srl":
+            case "sra":
+            case "sll":
+                d = registers.get(temp[1]);
+                t = registers.get(temp[2]);
+                h = numToBin(temp[3], 5); //TODO hex or bin to binary
+
+                break;
+            default:
+                d = registers.get(temp[1]);
+                s = registers.get(temp[2]);
+                t = registers.get(temp[3]);
+                break;
         }
         return coded + s+ t + d+ h + rInstructionMap.get(temp[0]);
     }
@@ -213,11 +212,10 @@ public class Assembler {
             word = line.split(":");
             split = line.split(" ");
 
-            if (line.contains(".word") || line.contains(".byte")) {
+            if (line.contains(".word") || line.contains(".byte"))
                 labels.put(word[word.length - 2].trim(), split[2]);
-            } else {
+            else
                 labels.put(word[0], Integer.toString(linenum));
-            }
         }
     }
 
@@ -236,9 +234,9 @@ public class Assembler {
             e.printStackTrace();
             System.exit(1);
         }
-        while (s.hasNextLine()) {
+        while (s.hasNextLine())
             lines.add(s.nextLine().trim());
-        }
+
         return lines;
     }
 
@@ -249,13 +247,9 @@ public class Assembler {
      */
     private static ArrayList<String> removeComments(ArrayList<String> lines) {
         ArrayList<String> temp = new ArrayList<String>();
-        for (String s : lines) {
-            if (s.indexOf('#') != -1) {
-                temp.add((String) s.subSequence(0, s.indexOf('#')));
-            } else {
-                temp.add(s);
-            }
-        }
+        for (String s : lines)
+            temp.add(s.indexOf('#') != -1 ? (String) s.subSequence(0, s.indexOf('#')) : s);
+
         return format(temp);
     }
 
@@ -285,10 +279,8 @@ public class Assembler {
     public static String decToBin(int x, int numChars) {
         String format = "%" + numChars + "s";
         String temp = String.format(format, Integer.toBinaryString(x)).replace(' ', '0');
-        if(temp.length() > 16){
-            return temp.substring(temp.length()-numChars);
-        }
-        return temp;
+
+        return temp.length() > 16 ? temp.substring(temp.length() - numChars) : temp;
     }
 
     /**
@@ -299,6 +291,7 @@ public class Assembler {
      */
     public static String hexToBin(String x, int numChars) {
         int hex = Integer.parseInt(x, 16);
+
         return decToBin(hex, numChars);
     }
 
@@ -309,11 +302,7 @@ public class Assembler {
      * @return string representation of the binary output
      */
     public static String numToBin(String x, int numChars){
-        if(x.contains("0x")){
-            return decToBin(Integer.parseInt(x.substring(2), 16),numChars);
-        }else{
-            return decToBin(Integer.parseInt(x),numChars);
-        }
+        return x.contains("0x") ? decToBin(Integer.parseInt(x.substring(2), 16), numChars) : decToBin(Integer.parseInt(x), numChars);
     }
 
     /* Instructions are 32 bits */
@@ -322,11 +311,10 @@ public class Assembler {
     static {
         String[] temp = registerNames.split(" ");
         int count = 0;
-        for (String s : temp) {
+        for (String s : temp)
             registers.put(s,
-                    String.format("%5s", Integer.toBinaryString(count++))
-                            .replace(' ', '0'));
-        }
+                  String.format("%5s", Integer.toBinaryString(count++))
+                        .replace(' ', '0'));
     }
     /*
      * R type instructions OpCode(6) Rs(5) Rt(5) Rd(5) Sa(5) Func(6)
