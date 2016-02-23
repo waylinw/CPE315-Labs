@@ -114,55 +114,61 @@ public class Simulator {
         int val;
         instrCount++;
 
-        if (opcode.equals("100011")) { // lw
-            registers.put(rt, data);
-            memoryRef++;
-            programCounter += 4;
-            // System.out.println("Hello");
-        } else if (opcode.equals("001111")) { // lui
-            val = Integer.parseInt(imm, 2) << 16;
-            programCounter +=  4;
-            registers.put(rt, val);
-        } else if (opcode.equals("001101")) { // ori
-            System.out.println("RT: " + rt + " RS: " + rs + "IMM: " + imm);
-            registers.put(rt,
-                    Integer.parseInt(rs, 2) | Integer.parseInt(imm, 2));
-            programCounter += 4;
-        } else if (opcode.equals("000100")) { // beq
-            System.out.println("BEQ: " + registers.get(rs) + ":" + registers.get(rt) + "=" + (registers.get(rs) == (registers.get(rt))) );
-            if (registers.get(rs) == (registers.get(rt))) {
-                System.out.println("BRANCHING HERE MOTHER FUCKER: " + ((Integer.parseInt(imm, 2)<<1)));
-                programCounter += ((Integer.parseInt(imm, 2)<<1))*4;
-            }else {
+        switch (opcode) {
+            case "100011":  // lw
+                registers.put(rt, data);
+                memoryRef++;
                 programCounter += 4;
-            }
-        } else if (opcode.equals("001001")) { // addiu
-            val = registers.get(rs) + Integer.parseInt(imm, 2);
-            registers.put(rt, val);
-            programCounter+=4;
-        } else if (opcode.equals("001000")) { // addi
-            val = registers.get(rs) + Integer.parseInt(imm, 2);
-            registers.put(rt, val);
-            programCounter+=4;
-        } else if (opcode.equals("001100")) { // andi
-            registers.put(rt,
-                    Integer.parseInt(rs, 2) & Integer.parseInt(imm, 2));
-            programCounter+=4;
-        } else if (opcode.equals("000101")) { // bne
-            if (registers.get(rs) != (registers.get(rt))) {
-                if(imm.charAt(0) == '1'){
-                    programCounter -= ((65535 - Integer.parseInt(imm,2)))*4;
-                }else{
-                    programCounter += Integer.parseInt(imm,2)*4;
+                // System.out.println("Hello");
+                break;
+            case "001111":  // lui
+                val = Integer.parseInt(imm, 2) << 16;
+                programCounter += 4;
+                registers.put(rt, val);
+                break;
+            case "001101":  // ori
+                System.out.println("RT: " + rt + " RS: " + rs + "IMM: " + imm);
+                registers.put(rt,
+                      Integer.parseInt(rs, 2) | Integer.parseInt(imm, 2));
+                programCounter += 4;
+                break;
+            case "000100":  // beq
+                System.out.println("BEQ: " + registers.get(rs) + ":" + registers.get(rt) + "=" + (registers.get(rs) == (registers.get(rt))));
+                if (registers.get(rs) == (registers.get(rt))) {
+                    System.out.println("BRANCHING HERE MOTHER FUCKER: " + ((Integer.parseInt(imm, 2) << 1)));
+                    programCounter += ((Integer.parseInt(imm, 2) << 1)) * 4;
+                } else {
+                    programCounter += 4;
                 }
-            }
-            else {
-                programCounter+=4;
-            }
-        } else if (opcode.equals("101011")) { // sw
-            saveData = Integer.parseInt(rt, 2);
-            programCounter+=4;
-            memoryRef++;
+                break;
+            case "001001":  // addiu
+                val = registers.get(rs) + Integer.parseInt(imm, 2);
+                registers.put(rt, val);
+                programCounter += 4;
+                break;
+            case "001000":  // addi
+                val = registers.get(rs) + Integer.parseInt(imm, 2);
+                registers.put(rt, val);
+                programCounter += 4;
+                break;
+            case "001100":  // andi
+                registers.put(rt,
+                      Integer.parseInt(rs, 2) & Integer.parseInt(imm, 2));
+                programCounter += 4;
+                break;
+            case "000101":  // bne
+                if (registers.get(rs) != (registers.get(rt)))
+                    if (imm.charAt(0) == '1')
+                        programCounter -= ((65535 - Integer.parseInt(imm, 2))) * 4;
+                    else programCounter += Integer.parseInt(imm, 2) * 4;
+                else
+                    programCounter += 4;
+                break;
+            case "101011":  // sw
+                saveData = Integer.parseInt(rt, 2);
+                programCounter += 4;
+                memoryRef++;
+                break;
         }
     }
 
@@ -170,9 +176,8 @@ public class Simulator {
         instrCount++;
         String opcode = instr.substring(0, 6);
         String target = instr.substring(6);
-        if (opcode.equals("000011")) {
-            programCounter = Integer.parseInt(target,2)<<2 ;
-        }
+        if (opcode.equals("000011"))
+            programCounter = Integer.parseInt(target, 2) << 2;
     }
 
     public static void parseRTypeInstructions(String instr) {
@@ -195,47 +200,49 @@ public class Simulator {
          * put("jr", "001000");
          */
         programCounter+=4;
-        if (funcCode.equals("100100")) { // and
-            registers
-                    .put(rd, (registers.get(rs) & registers.get(rt)) );
-        }
-        if (funcCode.equals("100101")) { // or
-            registers
-                    .put(rd, Integer.parseInt(rs, 2) | Integer.parseInt(rt, 2));
-        }
-        if (funcCode.equals("100000")) { // add
-            registers
-                    .put(rd, Integer.parseInt(rs, 2) + Integer.parseInt(rt, 2));
-        }
-        if (funcCode.equals("100001")) { // addu //TODO: UNSIGNED ADD LOL
-            registers
-                    .put(rd, Integer.parseInt(rs, 2) + Integer.parseInt(rt, 2));
-        }
-        if (funcCode.equals("000000")) { // sll
-            registers.put(rd,
-                    registers.get(rt) << Integer.parseInt(sa, 2));
-        }
-        if (funcCode.equals("000010")) { // srl
-            registers.put(rd,
-                    registers.get(rt) >> Integer.parseInt(sa, 2));
-        }
-        if (funcCode.equals("000011")) { // sra TODO: ARITHMETIC V LOGICAL SHIFT
-            registers.put(rd,(registers.get(rt) >> Integer.parseInt(sa, 2)) );
+        switch (funcCode) {
+            case "100100":  // and
+                registers
+                      .put(rd, (registers.get(rs) & registers.get(rt)));
+                break;
+            case "100101":  // or
+                registers
+                      .put(rd, Integer.parseInt(rs, 2) | Integer.parseInt(rt, 2));
+                break;
+            case "100000":  // add
+                registers
+                      .put(rd, Integer.parseInt(rs, 2) + Integer.parseInt(rt, 2));
+                break;
+            case "100001":  // addu //TODO: UNSIGNED ADD LOL
+                registers
+                      .put(rd, Integer.parseInt(rs, 2) + Integer.parseInt(rt, 2));
+                break;
+            case "000000":  // sll
+                registers.put(rd,
+                      registers.get(rt) << Integer.parseInt(sa, 2));
+                break;
+            case "000010":  // srl
+                registers.put(rd,
+                      registers.get(rt) >> Integer.parseInt(sa, 2));
+                break;
+            case "000011":  // sra TODO: ARITHMETIC V LOGICAL SHIFT
+                registers.put(rd, (registers.get(rt) >> Integer.parseInt(sa, 2)));
 
-        }
-        if (funcCode.equals("101001")) { // sltu
-            registers
-                    .put(rd,
+                break;
+            case "101001":  // sltu
+                registers
+                      .put(rd,
                             (Integer.parseInt(rs, 2) < Integer.parseInt(rt, 2)) ? 1
-                                    : 0);
-        }
-        if (funcCode.equals("100010")) { // sub
-            registers
-                    .put(rd, Integer.parseInt(rs, 2) - Integer.parseInt(rt, 2));
-        }
-        if (funcCode.equals("001000")) { // jr
-            programCounter-=4;
-            programCounter += (Integer.parseInt(rs, 2)/4);
+                                  : 0);
+                break;
+            case "100010":  // sub
+                registers
+                      .put(rd, Integer.parseInt(rs, 2) - Integer.parseInt(rt, 2));
+                break;
+            case "001000":  // jr
+                programCounter -= 4;
+                programCounter += (Integer.parseInt(rs, 2) / 4);
+                break;
         }
 
     }
@@ -294,17 +301,23 @@ public class Simulator {
             System.out.println("1) single step, 2) run, or 3) exit?");
 
             int input = Integer.parseInt(stdin.next());
-            if( input == 1){
-                lock = singleStep();
-            } else if (input == 2) {
-                while(singleStep() && memArray[PCtoIndex(programCounter)] != null){}
-                lock = false;
-            } else if (input == 3) {
-                lock = false;
-                System.out.println("Good-bye!");
-            } else {
-                lock = false;
-                System.out.println("No such option. Exiting...");
+            switch (input) {
+                case 1:
+                    lock = singleStep();
+                    break;
+                case 2:
+                    while (singleStep() && memArray[PCtoIndex(programCounter)] != null) {
+                    }
+                    lock = false;
+                    break;
+                case 3:
+                    lock = false;
+                    System.out.println("Good-bye!");
+                    break;
+                default:
+                    lock = false;
+                    System.out.println("No such option. Exiting...");
+                    break;
             }
         }
         printResults();
