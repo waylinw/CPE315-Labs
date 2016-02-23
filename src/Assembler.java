@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Assembler {
 
     public static void main(String[] args) {
-        String fileName = "test.s";
+        String fileName = "Countbits.s";
 
         int lineNumber = 1;
 
