@@ -15,14 +15,10 @@ public class Simulator {
     // Warning: not dynamically allocated
     private static int data = 65615; // not sure what to do with this
     private static Scanner scanner; // Scanner that holds open bin file
-    private static HashMap<String, Integer> registers = // K = register name in
-            // binary, V = contents
-            // held inside
-            new HashMap<String, Integer>();
+    private static HashMap<String, Integer> registers = new HashMap<String, Integer>();// K = register name in binary, V = contentsheld inside
     private static int programCounter = 4194304; // Which instrution we're running 0x0400000
     private static ArrayList<String> iType = new ArrayList<String>(); // simply
     private static int saveData = 0;
-    //private static ArrayList<String> rType = new ArrayList<String>(); // simply
 
     private static ArrayList<String> jType = new ArrayList<String>(); // simply
     private static int instrCount = 0; // number of instructions run
@@ -62,10 +58,6 @@ public class Simulator {
         jType.add("000011"); // jal opcode
 
         // all R type has 00000 opcode
-        // rType.add("100101"); // or
-        // rType.add("100100"); // and
-        // rType.add("000000"); // sll
-        // rType.add("100001"); // addu
     }
 
     /**
@@ -290,7 +282,7 @@ public class Simulator {
     }
 
     public static void main(String[] args) {
-        openFile("countbits");
+        openFile("Countbits.s");
         simInit();
 
         boolean lock = true;
